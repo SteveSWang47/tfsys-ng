@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include <format>
+#include <iomanip>
 #include <string.h>
 #include <time.h>
 
@@ -19,13 +19,15 @@ int main()
     }
     mysqlpp::Connection conn("tfsys");
     conn.set_option(new mysqlpp::MultiStatementsOption(true));
-    mysqlpp::Query qry = conn.query(std::format("select result from recs where id={} and setid={};", id, setid));
+    mysqlpp::Query qry(&conn, true); 
+    qry << "select result from recs where id=" << id << " and setid=" << setid << ';';
     if(qry.store().size() > 50)
     {
         printf("Content-type: text/html\n\n本项目您的提交次数过多，已无法继续提交。");
         return 0;
     }
-    qry = conn.query(std::format("insert into recs values ({}, {}, {}, {}); select time, result from recs where id={} and setid={} order by time desc;", id, setid, time(0), cres, id, setid));
+    qry = mysqlpp::Query(&conn, true);
+    qry << "insert into recs values (" << id << ", " << setid << ", " << time(0) << ", " << cres << "); select time, result from recs where id=" << id << " and setid=" << setid << " order by time desc;";
     printf("Content-type: text/html\n\n");
     qry.store();
     if(mysqlpp::StoreQueryResult res = qry.store_next())
@@ -39,7 +41,7 @@ int main()
             std::cout << "<tr>\n";
             stp = rw[0];
             hora = localtime(&stp);
-            std::cout << std::format("<td>{}.{}.{}</td><td>{}:{}</td>\n", hora->tm_year+1900, hora->tm_mon+1, hora->tm_mday, hora->tm_hour, hora->tm_min)
+            std::cout << "<td>" << hora->tm_year+1900 << "." << hora->tm_mon+1 << "." << hora->tm_mday << "</td><td>" << std::setw(2) << std::setfill('0') << hora->tm_hour << ":" << std::setw(2) << std::setfill('0') << hora->tm_min <<"</td>\n"
                       << "<td>" << rw[1] << "</td>\n"
                       << "</tr>\n";
         }

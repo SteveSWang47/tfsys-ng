@@ -2,7 +2,6 @@
 #include <regex>
 #include <iostream>
 #include <iomanip>
-#include <format>
 #include <stdio.h>
 #include <time.h>
 
@@ -28,9 +27,9 @@ int main()
                 std::cout << "<td>" << std::setw(5) << std::setfill('0') << rw[1] << "</td>\n";
                 stp = rw[2];
                 hora = localtime(&stp);
-                std::cout << std::format("<td>{}.{}.{}</td><td>{}:{}</td>\n", hora->tm_year+1900, hora->tm_mon+1, hora->tm_mday, hora->tm_hour, hora->tm_min);
-                std::cout << "<td>" << rw[3] << "</td>\n";
-                std::cout << "</tr>\n";
+                std::cout << "<td>" << hora->tm_year+1900 << "." << hora->tm_mon+1 << "." << hora->tm_mday << "</td><td>" << std::setw(2) << std::setfill('0') << hora->tm_hour << ":" << std::setw(2) << std::setfill('0') << hora->tm_min <<"</td>\n"
+                          << "<td>" << rw[3] << "</td>\n"
+                          << "</tr>\n";
             }
             std::cout << "</table><br />\n";
             if(pag > 0)
