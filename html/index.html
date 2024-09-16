@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<head>
+    <title>TFSys Demo</title>
+    <meta charset="UTF-8">
+    <script>
+        function reqListener()
+        {
+            document.getElementById("SelectArea").innerHTML = this.responseText;
+        }
+        function reqListenerQry()
+        {
+            document.getElementById("QResult").innerHTML = this.responseText;
+        }
+        function start()
+        {
+            sjye = document.getElementById("InSjye").value;
+            if(sjye.match(/^[0-9]{7}$/))
+            {
+                document.getElementById("heada").innerHTML = "学工号: "+document.getElementById("InSjye").value+"<br />请选择要挑战的项目";
+                document.getElementById("InSjArea").style.display = "none";
+                document.getElementById("SelectArea").style.display = "block";
+                const req = new XMLHttpRequest();
+                req.addEventListener("load", reqListener);
+                req.open("GET", "/cgi-bin/getsetlist.cgi?"+sjye);
+                req.send();
+            }
+            else
+            {
+                window.alert("您的输入无效 请正确输入您的学工号");
+                document.getElementById("heada").innerHTML = "请正确输入您的学工号";
+            }
+        }
+        function startqry()
+        {
+            document.getElementById("heada").innerHTML = "提交记录查询";
+            document.getElementById("InSjArea").style.display = "none";
+            document.getElementById("QryArea").style.display = "block";
+        }
+        function qrysj()
+        {
+            key = document.getElementById("InQry").value;
+            qpag = 0;
+            if(key.match(/^[0-9]{7}$/))
+            {
+                const req = new XMLHttpRequest();
+                req.addEventListener("load", reqListenerQry);
+                req.open("POST", "/cgi-bin/qrybyid.cgi");
+                req.send(key + ' ' + qpag);
+            }
+            else
+            {
+                window.alert("您的输入无效");
+            }
+        }
+        function qrysp()
+        {
+            key = document.getElementById("InQry").value;
+            qpag = 0;
+            if(key.match(/^[0-9]{5}$/))
+            {
+                const req = new XMLHttpRequest();
+                req.addEventListener("load", reqListenerQry);
+                req.open("POST", "/cgi-bin/qrybyst.cgi");
+                req.send(key + ' ' + qpag);
+            }
+            else
+            {
+                window.alert("您的输入无效");
+            }
+        }
+        function prvpagid()
+        {
+            --qpag;
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", reqListenerQry);
+            req.open("POST", "/cgi-bin/qrybyid.cgi");
+            req.send(key + ' ' + qpag);
+        }
+        function nxtpagid()
+        {
+            ++qpag;
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", reqListenerQry);
+            req.open("POST", "/cgi-bin/qrybyid.cgi");
+            req.send(key + ' ' + qpag);
+        }
+        function prvpagst()
+        {
+            --qpag;
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", reqListenerQry);
+            req.open("POST", "/cgi-bin/qrybyst.cgi");
+            req.send(key + ' ' + qpag);
+        }
+        function nxtpagst()
+        {
+            ++qpag;
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", reqListenerQry);
+            req.open("POST", "/cgi-bin/qrybyst.cgi");
+            req.send(key + ' ' + qpag);
+        }
+    </script>
+    <style>
+        body{
+            background-image: linear-gradient(90deg, rgb(252, 225, 185), rgb(255, 240, 217));
+            text-align: center;
+        }
+        .AreaBox{
+            text-align: center;
+            background-color: #f0f0f0;
+            border-style: solid;
+            border-width: 1px;
+            padding: 1cm 1cm 1cm 1cm;
+            margin: auto;
+            display: inline-block;
+            box-shadow: 2px 2px 2px #909090;
+        }
+        #heada{
+            font-size: 30px;
+        }
+        header{
+            background-image: linear-gradient(90deg, #0070ff, #00b0f0);
+            color: #ffffff;
+            display: block;
+        }
+        button, input{
+            padding: 4px 4px 4px 4px;
+        }
+        th, td {
+            border:1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TFSys</h1>
+    </header>
+    <div class="AreaBox">
+        <span id="heada">请输入<span onclick="startqry()">您</span>的学工号</span>
+        <div id="InSjArea">
+            <input id="InSjye" />
+            <button onclick="start()">确定</button>
+        </div>
+        <div id="QryArea" style="display: none;">
+            <input id="InQry" />
+            <br />
+            <span style="text-align: right;">
+                <button onclick="qrysj()">按学工号查询</button>
+                <button onclick="qrysp()">按题组编号查询</button>
+            </span>
+            <div id="QResult">
+            </div>
+        </div>
+        <div id="SelectArea" style="display: none;">
+        </div>
+    </div>
+</body>

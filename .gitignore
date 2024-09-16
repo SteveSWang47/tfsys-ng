@@ -1,0 +1,3 @@
+cgi/*.cgi
+.vscode/
+cgi/a.out
