@@ -4,9 +4,6 @@
 
 int main()
 {
-    std::string str;
-    int pag;
-    std::cin >> str >> pag;
     printf("Content-type: text/csv\n\n");
     mysqlpp::Connection conn("tfsys");
     mysqlpp::Query qry = conn.query("select from_unixtime(time), id, (select name from users where id = recs.id), (select class from users where id = recs.id), lpad(setid, 5, 0), (select name from sets where id = recs.setid), cast((result * 100 / (select full from sets where id = recs.setid)) as unsigned) from recs order by time desc;");
