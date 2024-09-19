@@ -20,7 +20,7 @@ int main()
             for(auto cl : rw)
             {
                 std::cout << cl;
-                if(i == rw.size()) ",";
+                if(i < rw.size()) ",";
                 ++i;
             }
             std::cout << '\n';
