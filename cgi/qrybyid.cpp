@@ -1,9 +1,7 @@
 #include <mysql++/mysql++.h>
 #include <regex>
 #include <iostream>
-#include <iomanip>
 #include <stdio.h>
-#include <time.h>
 
 int main()
 {
@@ -14,22 +12,18 @@ int main()
     if(std::regex_match(str, std::regex(R"([0-9]{7})")))
     {
         mysqlpp::Connection conn("tfsys");
-        mysqlpp::Query qry = conn.query("select * from recs where id="+str+" order by time desc offset " + std::to_string(pag*50) + " rows fetch first 50 rows only;");
+        mysqlpp::Query qry = conn.query("select from_unixtime(time), id, (select name from users where id = recs.id), (select class from users where id = recs.id), lpad(setid, 5, 0), (select name from sets where id = recs.setid), cast((result * 100 / (select full from sets where id = recs.setid)) as unsigned) from recs where id="+str+" order by time desc offset " + std::to_string(pag*50) + " rows fetch first 50 rows only;");
         if(mysqlpp::StoreQueryResult res = qry.store())
         {
-            std::cout << "<table>\n<thread><tr><th>学工号</th><th>题组</th><th>日期</th><th>时间</th><th>得分</th></tr></thread>\n<tbody>";
-            time_t stp;
-            struct tm *hora;
+            std::cout << "<table>\n<thread><tr><th>时间</th><th>学工号</th><th>姓名</th><th>班级</th><th>题组编号</th><th>题组名称</th><th>得分</th></tr></thread>\n<tbody>";
             for(auto rw : res)
             {
                 std::cout << "<tr>\n";
-                std::cout << "<td>" << rw[0] << "</td>\n";
-                std::cout << "<td>" << std::setw(5) << std::setfill('0') << rw[1] << "</td>\n";
-                stp = rw[2];
-                hora = localtime(&stp);
-                std::cout << "<td>" << hora->tm_year+1900 << "." << hora->tm_mon+1 << "." << hora->tm_mday << "</td><td>" << std::setw(2) << std::setfill('0') << hora->tm_hour << ":" << std::setw(2) << std::setfill('0') << hora->tm_min <<"</td>\n"
-                          << "<td>" << rw[3] << "</td>\n"
-                          << "</tr>\n";
+                for(auto cl : rw)
+                {
+                    std::cout << "<td>" << cl << "</td>\n";
+                }
+                std::cout << "</tr>\n";
             }
             std::cout << "</table><br />\n";
             if(pag > 0)
