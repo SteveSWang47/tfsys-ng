@@ -26,19 +26,21 @@ int main()
     <meta charset="UTF-8">
     <script>
 )", probset.data(), id.data());
-    std::queue<std::string> pbq;
+    std::queue<std::string> pbq, ansq;
     for(int i = 0; i < siz; i++)
     {
         getline(probin, curlin);
         if(curlin[0] == 'T') printf(R"(        right%d = %d;
         function true%d() { document.getElementById("curans%d").innerHTML = "(正确) "; right%d = 1;}
-        function false%d() { document.getElementById("curans%d").innerHTML = "(错误) "; right%d = 0;}
+        function false%d() { document.getElementById("curans%d").innerHTML = "<span class='wa'>(错误) </span>"; right%d = 0;}
 )", i,i,i,i,i,i,i,i);
         else printf(R"(        right%d = %d;
-        function true%d() { document.getElementById("curans%d").innerHTML = "(正确) "; right%d = 0;}
+        function true%d() { document.getElementById("curans%d").innerHTML = "<span class='wa'>(正确) </span>"; right%d = 0;}
         function false%d() { document.getElementById("curans%d").innerHTML = "(错误) "; right%d = 1;}
 )", i,i,i,i,i,i,i,i);
         pbq.push(curlin);
+        getline(probin, curlin);
+        ansq.push(curlin);
     }
     printf(R"(        function reqListener() {
             document.getElementById("remoteresult").innerHTML = this.responseText;
@@ -49,6 +51,9 @@ int main()
     printf(R"(;
             for(var ansspan of document.getElementsByClassName("ans")) {
                 ansspan.style.display = "block";
+            }
+            for(var waspan of document.getElementsByClassName("wa")) {
+                waspan.style.color = "#ff0000";
             }
             for(var btnspan of document.getElementsByClassName("solvbtn")) {
                 btnspan.innerHTML = "";
@@ -110,7 +115,7 @@ int main()
         </span>
         <span>%s</span>
         <br />
-        <span class="ans" style="display: none;">正确答案: 正确<br /></span><br />)",i,i,i,curlin.substr(1, curlin.size()-1).data());
+        <span class="ans" style="display: none;">正确答案: 正确<br />解析：%s</span><br />)",i,i,i,curlin.substr(1, curlin.size()-1).data(), ansq.front().data());
         else printf(R"(        <span id="curans%d">() </span>
         <span class="solvbtn">
             <button onclick="true%d() ">正确</button>
@@ -118,7 +123,8 @@ int main()
         </span>
         <span>%s</span>
         <br />
-        <span class="ans" style="display: none;">正确答案: 错误<br /></span><br />)",i,i,i,curlin.substr(1, curlin.size()-1).data());
+        <span class="ans" style="display: none;">正确答案: 错误<br />解析：%s</span><br />)",i,i,i,curlin.substr(1, curlin.size()-1).data(), ansq.front().data());
+        ansq.pop();
     }
     printf(R"(        <button onclick="on_submit() ">提交</button><span id="result"></span>
         <div id="remoteresult"></div>

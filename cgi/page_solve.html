@@ -6,12 +6,12 @@
     <script>
         right0 = 0;
         function true0() { document.getElementById("curans0").innerHTML = "(正确) "; right0 = 1;}
-        function false0() { document.getElementById("curans0").innerHTML = "(错误) "; right0 = 0;}
+        function false0() { document.getElementById("curans0").innerHTML = "<span class='wa'> (错误) </span>"; right0 = 0;}
         right1 = 0;
         function true1() { document.getElementById("curans1").innerHTML = "(正确) "; right1 = 1;}
-        function false1() { document.getElementById("curans1").innerHTML = "(错误) "; right1 = 0;}
+        function false1() { document.getElementById("curans1").innerHTML = "<span class='wa'>(错误) </span>"; right1 = 0;}
         right2 = 0;
-        function true2() { document.getElementById("curans2").innerHTML = "(正确) "; right2 = 0;}
+        function true2() { document.getElementById("curans2").innerHTML = "<span class='wa'>(正确) </span>"; right2 = 0;}
         function false2() { document.getElementById("curans2").innerHTML = "(错误) "; right2 = 1;}
         function reqListener() {
             document.getElementById("remoteresult").innerHTML = this.responseText;
@@ -20,6 +20,9 @@
             let res = 0 + right0 + right1 + right2;
             for(var ansspan of document.getElementsByClassName("ans")) {
                 ansspan.style.display = "block";
+            }
+            for(var waspan of document.getElementsByClassName("wa")) {
+                waspan.style.color = "#ff0000";
             }
             for(var btnspan of document.getElementsByClassName("solvbtn")) {
                 btnspan.innerHTML = "";
