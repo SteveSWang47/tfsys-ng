@@ -69,6 +69,17 @@
                 window.alert("您的输入无效");
             }
         }
+        function cbQryall()
+        {
+            document.getElementById("QResult").innerHTML = this.responseText;
+        }
+        function qryall()
+        {
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", cbQryall);
+            req.open("GET", "/cgi-bin/qryallbyname.cgi");
+            req.send();
+        }
         function prvpagid()
         {
             --qpag;
@@ -150,6 +161,7 @@
             <span style="text-align: right;">
                 <button onclick="qrysj()">按学工号查询</button>
                 <button onclick="qrysp()">按题组编号查询</button>
+                <button onclick="qryall()">查询全部，按姓名排序</button>
             </span>
             <div id="QResult">
             </div>
