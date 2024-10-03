@@ -30,14 +30,14 @@ int main()
     for(int i = 0; i < siz; i++)
     {
         getline(probin, curlin);
-        if(curlin[0] == 'T') printf(R"(        right%d = %d;
+        if(curlin[0] == 'T') printf(R"(        right%d = 0;
         function true%d() { document.getElementById("curans%d").innerHTML = "(正确) "; right%d = 1;}
         function false%d() { document.getElementById("curans%d").innerHTML = "<span class='wa'>(错误) </span>"; right%d = 0;}
-)", i,i,i,i,i,i,i,i);
-        else printf(R"(        right%d = %d;
+)", i,i,i,i,i,i,i);
+        else printf(R"(        right%d = 0;
         function true%d() { document.getElementById("curans%d").innerHTML = "<span class='wa'>(正确) </span>"; right%d = 0;}
         function false%d() { document.getElementById("curans%d").innerHTML = "(错误) "; right%d = 1;}
-)", i,i,i,i,i,i,i,i);
+)", i,i,i,i,i,i,i);
         pbq.push(curlin);
         getline(probin, curlin);
         ansq.push(curlin);
